@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1",
+    "name": "Wireless Headphones",
+    "price": 59.99,
+    "rating": 4,
+    "image": "https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Noise-canceling over-ear headphones with Bluetooth connectivity."
+  },
+  {
+    "id": "2",
+    "name": "Smart Watch",
+    "price": 129.99,
+    "rating": 5,
+    "image": "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Fitness tracker and notification-enabled smart watch."
+  },
+  {
+    "id": "3",
+    "name": "Bluetooth Speaker",
+    "price": 39.99,
+    "rating": 4,
+    "image": "https://images.pexels.com/photos/1706694/pexels-photo-1706694.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Portable speaker with rich bass and long battery life."
+  },
+  {
+    "id": "4",
+    "name": "Gaming Mouse",
+    "price": 24.99,
+    "rating": 4,
+    "image": "https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Ergonomic design with customizable RGB lighting."
+  },
+  {
+    "id": "5",
+    "name": "Mechanical Keyboard",
+    "price": 89.99,
+    "rating": 5,
+    "image": "https://images.pexels.com/photos/1772123/pexels-photo-1772123.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Tactile switches ideal for gaming and typing."
+  },
+  {
+    "id": "6",
+    "name": "4K Monitor",
+    "price": 299.99,
+    "rating": 5,
+    "image": "https://images.pexels.com/photos/1714202/pexels-photo-1714202.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Ultra HD monitor with vibrant color and low input lag."
+  },
+  {
+    "id": "7",
+    "name": "USB-C Hub",
+    "price": 19.99,
+    "rating": 3,
+    "image": "https://images.pexels.com/photos/20076003/pexels-photo-20076003/free-photo-of-portable-hard-disk-with-wire.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Multiport adapter for USB, HDMI, and SD cards."
+  },
+  {
+    "id": "8",
+    "name": "Webcam",
+    "price": 49.99,
+    "rating": 4,
+    "image": "https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "1080p HD webcam with built-in microphone."
+  },
+  {
+    "id": "9",
+    "name": "Portable SSD",
+    "price": 119.99,
+    "rating": 5,
+    "image": "https://images.pexels.com/photos/2942361/pexels-photo-2942361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "1TB fast storage drive with USB 3.2."
+  },
+  {
+    "id": "10",
+    "name": "Wireless Charger",
+    "price": 29.99,
+    "rating": 3,
+    "image": "https://images.pexels.com/photos/5083411/pexels-photo-5083411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Qi-certified pad with fast charging support."
+  },
+  {
+    "id": "11",
+    "name": "Tablet Stand",
+    "price": 14.99,
+    "rating": 3,
+    "image": "https://via.placeholder.com/200x200.png?text=Tablet+Stand",
+    "description": "Adjustable stand compatible with most tablets."
+  },
+  {
+    "id": "12",
+    "name": "Laptop Sleeve",
+    "price": 17.99,
+    "rating": 4,
+    "image": "https://via.placeholder.com/200x200.png?text=Laptop+Sleeve",
+    "description": "Padded sleeve for 13-15 inch laptops."
+  },
+  {
+    "id": "13",
+    "name": "LED Desk Lamp",
+    "price": 22.99,
+    "rating": 4,
+    "image": "https://via.placeholder.com/200x200.png?text=Desk+Lamp",
+    "description": "Dimmable light with USB charging port."
+  },
+  {
+    "id": "14",
+    "name": "Noise-Cancelling Earbuds",
+    "price": 69.99,
+    "rating": 5,
+    "image": "https://via.placeholder.com/200x200.png?text=Earbuds",
+    "description": "In-ear wireless earbuds with ANC technology."
+  },
+  {
+    "id": "15",
+    "name": "Smartphone Gimbal",
+    "price": 89.99,
+    "rating": 4,
+    "image": "https://via.placeholder.com/200x200.png?text=Gimbal",
+    "description": "3-axis stabilizer for cinematic phone videos."
+  },
+  {
+    "id": "16",
+    "name": "Action Camera",
+    "price": 199.99,
+    "rating": 5,
+    "image": "https://via.placeholder.com/200x200.png?text=Action+Camera",
+    "description": "Waterproof camera with 4K video and wide angle lens."
+  },
+  {
+    "id": "17",
+    "name": "Fitness Tracker",
+    "price": 49.99,
+    "rating": 4,
+    "image": "https://via.placeholder.com/200x200.png?text=Fitness+Tracker",
+    "description": "Tracks steps, sleep, and heart rate."
+  },
+  {
+    "id": "18",
+    "name": "Phone Tripod",
+    "price": 12.99,
+    "rating": 3,
+    "image": "https://images.pexels.com/photos/13709176/pexels-photo-13709176.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Compact and flexible tripod for smartphones."
+  },
+  {
+    "id": "19",
+    "name": "Graphic Tablet",
+    "price": 149.99,
+    "rating": 5,
+    "image": "https://images.pexels.com/photos/301792/pexels-photo-301792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Digital drawing pad with pen pressure sensitivity."
+  },
+  {
+    "id": "20",
+    "name": "Wireless Presenter",
+    "price": 25.99,
+    "rating": 4,
+    "image": "https://images.pexels.com/photos/31726722/pexels-photo-31726722/free-photo-of-modern-portable-projector-with-minimalist-design.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "description": "Remote with laser pointer for presentations."
+  }
+]
