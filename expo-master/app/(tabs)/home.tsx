@@ -5,9 +5,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
-
+import * as SecureStore from "expo-secure-store";
 const Home = () => {
   const [data, setdata] = useState([]);
+
+  async function getValueFor(key: string) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+      console.log("🔐 Here's your value 🔐 \n" + result);
+    } else {
+      console.log("No values stored under that key.");
+    }
+  }
 
   const fetchallproducts = async () => {
     try {
@@ -22,6 +31,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    getValueFor("accessToken");
     console.log("fetching products");
     fetchallproducts();
   }, []);
