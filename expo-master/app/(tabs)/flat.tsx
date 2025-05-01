@@ -11,6 +11,7 @@ import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "@/components/Button";
 import { api } from "../_layout";
+import { useDebounce } from "use-debounce";
 
 interface apiitems {
   title: string;
@@ -19,14 +20,14 @@ interface apiitems {
   price: number;
 }
 const Flat = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState<apiitems[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<apiitems[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [activeBtn, setActiveBtn] = useState(0);
-
+  const [value] = useDebounce(searchQuery, 1000);
   const totalPages = Math.ceil(filteredProducts.length / limit);
 
   const fetchProducts = async () => {
@@ -52,19 +53,10 @@ const Flat = () => {
     setRefreshing(false);
   };
 
-  const handleSearch = () => {
-    const filtered = allProducts.filter((item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleSort = (key: any, order: any) => {
+    setFilteredProducts((prev) =>
+      prev.sort((a, b) => (order === "asc" ? a[key] - b[key] : b[key] - a[key]))
     );
-    setFilteredProducts(filtered);
-    setPage(1);
-  };
-
-  const handleSort = (key, order) => {
-    const sorted = [...filteredProducts].sort((a, b) =>
-      order === "asc" ? a[key] - b[key] : b[key] - a[key]
-    );
-    setFilteredProducts(sorted);
     setPage(1);
   };
 
@@ -72,9 +64,21 @@ const Flat = () => {
     (page - 1) * limit,
     page * limit
   );
+  //20 - 30
+  useEffect(() => {
+    if (value) {
+      const filtered = allProducts.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+      setPage(1);
+    } else {
+      setFilteredProducts(allProducts);
+    }
+  }, [value]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* Search */}
       <View style={styles.searchBar}>
         <TextInput
@@ -82,11 +86,6 @@ const Flat = () => {
           placeholder="Search here..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-        />
-        <Button
-          title="Search"
-          onPress={handleSearch}
-          style={styles.searchButton}
         />
       </View>
 
@@ -164,7 +163,7 @@ const Flat = () => {
           </View>
         )}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -200,6 +199,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
+    marginTop: 10,
     backgroundColor: "#f8f9fa",
   },
   searchBar: {
