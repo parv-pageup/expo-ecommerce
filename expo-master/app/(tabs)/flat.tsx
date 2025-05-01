@@ -8,20 +8,24 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "@/components/Button";
 import { api } from "../_layout";
 import { useDebounce } from "use-debounce";
+import { Link } from "expo-router";
 
-interface apiitems {
-  title: string;
-  description: string;
-  image: string;
-  price: number;
-}
+const category = [
+  "Electronics",
+  "Fashion",
+  "Beauty",
+  "Home",
+  "Sports",
+  "Toys",
+  "Books",
+  "food",
+];
 const Flat = () => {
-  const [allProducts, setAllProducts] = useState<apiitems[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<apiitems[]>([]);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,14 +53,25 @@ const Flat = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     setActiveBtn(0);
+    setFilteredProducts(allProducts);
     await fetchProducts();
     setRefreshing(false);
   };
 
-  const handleSort = (key: any, order: any) => {
-    setFilteredProducts((prev) =>
-      prev.sort((a, b) => (order === "asc" ? a[key] - b[key] : b[key] - a[key]))
-    );
+  const handleSort = (key: string, order: string) => {
+    let updatedProducts = [...allProducts];
+
+    if (key === "category") {
+      updatedProducts = updatedProducts.filter(
+        (item) => item.category === order
+      );
+    } else {
+      updatedProducts.sort((a, b) =>
+        order === "asc" ? a[key] - b[key] : b[key] - a[key]
+      );
+    }
+
+    setFilteredProducts(updatedProducts);
     setPage(1);
   };
 
@@ -95,33 +110,43 @@ const Flat = () => {
           title="Price ↑"
           onPress={() => {
             handleSort("price", "asc");
-            setActiveBtn(1);
+            setActiveBtn(10);
           }}
-          style={[styles.button, activeBtn === 1 && { backgroundColor: "red" }]}
+          style={[
+            styles.button,
+            activeBtn === 10 && { backgroundColor: "red" },
+          ]}
         />
         <Button
           title="Price ↓"
           onPress={() => {
             handleSort("price", "desc");
-            setActiveBtn(2);
+            setActiveBtn(11);
           }}
-          style={[styles.button, activeBtn === 2 && { backgroundColor: "red" }]}
+          style={[
+            styles.button,
+            activeBtn === 11 && { backgroundColor: "red" },
+          ]}
         />
-        <Button
-          title="Rating ↑"
-          onPress={() => {
-            handleSort("rating", "asc");
-            setActiveBtn(3);
-          }}
-          style={[styles.button, activeBtn === 3 && { backgroundColor: "red" }]}
-        />
-        <Button
-          title="Rating ↓"
-          onPress={() => {
-            handleSort("rating", "desc");
-            setActiveBtn(4);
-          }}
-          style={[styles.button, activeBtn === 4 && { backgroundColor: "red" }]}
+
+        <FlatList
+          horizontal
+          data={category}
+          renderItem={({ item, index }) => (
+            <Button
+              title={item}
+              onPress={() => {
+                handleSort("category", item);
+                setActiveBtn(index + 1);
+              }}
+              style={[
+                styles.button,
+                activeBtn === index + 1 && { backgroundColor: "red" },
+                { marginHorizontal: 10 },
+              ]}
+            />
+          )}
+          style={{ gap: 5, marginHorizontal: 20 }}
         />
       </View>
 
@@ -168,14 +193,22 @@ const Flat = () => {
 };
 
 const Item = React.memo(({ item }: any) => (
-  <View key={item.id} style={styles.card}>
-    <Image source={item.image} style={styles.image} contentFit="cover" />
-    <View style={styles.cardContent}>
-      <Text style={styles.itemName}>{item.title}</Text>
-      <Text style={styles.itemPrice}>${item.price}</Text>
-      <Text style={styles.itemDescription}>{item.description}</Text>
+  <Link
+    href={{
+      pathname: "/productdetails/[id]",
+      params: { id: `${item._id}` },
+    }}
+    style={{ marginVertical: 10 }}
+  >
+    <View key={item.id} style={styles.card}>
+      <Image source={item.image} style={styles.image} contentFit="cover" />
+      <View style={styles.cardContent}>
+        <Text style={styles.itemName}>{item.title}</Text>
+        <Text style={styles.itemPrice}>${item.price}</Text>
+        <Text style={styles.itemDescription}>{item.description}</Text>
+      </View>
     </View>
-  </View>
+  </Link>
 ));
 
 const styles = StyleSheet.create({

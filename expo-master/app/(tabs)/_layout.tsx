@@ -66,6 +66,17 @@ const TabLayout = () => {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="productdetails/[id]"
+        options={{
+          title: "detailed products",
+          animation: "shift",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="user-circle" color={color} />
+          ),
+          href: null,
+        }}
+      />
     </Tabs>
   );
 };

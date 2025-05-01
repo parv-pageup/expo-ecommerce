@@ -16,14 +16,14 @@ import * as SecureStore from "expo-secure-store";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export const api = axios.create({ baseURL: "http://192.168.1.11:8000/api/v1" });
+export const api = axios.create({ baseURL: "http://192.168.1.9:8000/api/v1" });
 async function save(key: string, value: string) {
   await SecureStore.setItemAsync(key, value);
 }
 // Request Interceptor: Attach token automatically
 api.interceptors.request.use(async (config) => {
   const token = await SecureStore.getItemAsync("accessToken");
-  console.log("token", token);
+  // console.log("token", token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
