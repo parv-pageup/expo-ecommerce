@@ -1,196 +1,166 @@
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   TextInput,
   FlatList,
   RefreshControl,
-  ActivityIndicator,
 } from "react-native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import demodata from "@/constants/demo.json";
+import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "@/components/Button";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useRef } from "react";
+import { api } from "../_layout";
 
+interface apiitems {
+  title: string;
+  description: string;
+  image: string;
+  price: number;
+}
 const Flat = () => {
-  const [loadmore, setloadmore] = useState(false);
-  const [activebtn, setactivebtn] = useState(0);
-  const [number, setnumber] = useState(5);
-  const [data, setdata] = useState(demodata.slice(0, number));
-  // const [search, setsearch] = useState("");
-  const [refreshing, setrefreshing] = useState(false);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeBtn, setActiveBtn] = useState(0);
 
-  const searchRef = useRef("");
+  const totalPages = Math.ceil(filteredProducts.length / limit);
 
-  const searchdata = () => {
-    const newdata = demodata.filter((item) =>
-      item.name.toLowerCase().includes(searchRef.current.toLowerCase())
-    );
-    setdata(newdata);
-  };
-
-  const selectedSort = (sort: string) => {
-    setdata((prev) => {
-      return prev.sort((a, b) =>
-        sort === "asc" ? a.price - b.price : b.price - a.price
-      );
-    });
-  };
-
-  const sortByRating = (order: string) => {
-    setdata((prev) => {
-      return prev.sort((a, b) =>
-        order === "asc" ? a.rating - b.rating : b.rating - a.rating
-      );
-    });
-  };
-
-  const onRefresh = () => {
-    if (!loadmore) {
-      setrefreshing(true);
-      setnumber(5);
-      setdata(demodata.slice(0, number));
-      setTimeout(() => {
-        setrefreshing(false);
-        setactivebtn(0);
-      }, 2000);
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get(`/products/products`);
+      const data = res.data;
+      setAllProducts(data);
+      setFilteredProducts(data);
+      setPage(1);
+    } catch (error: any) {
+      console.log("Fetch error:", error.message);
     }
   };
-  useEffect(() => {
-    setnumber(5);
-    setdata(demodata.slice(0, number));
-  }, [refreshing]);
 
-  const handleloadmore = () => {
-    setloadmore(true);
-    setTimeout(() => {
-      if (number < 15 && searchRef.current !== " ") {
-        const somedata = demodata.slice(number, number + 1);
-        setdata((prev) => [...prev, ...somedata]);
-      }
-      setnumber((prev) => prev + 1);
-    }, 3000);
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setActiveBtn(0);
+    await fetchProducts();
+    setRefreshing(false);
   };
+
+  const handleSearch = () => {
+    const filtered = allProducts.filter((item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+    setPage(1);
+  };
+
+  const handleSort = (key, order) => {
+    const sorted = [...filteredProducts].sort((a, b) =>
+      order === "asc" ? a[key] - b[key] : b[key] - a[key]
+    );
+    setFilteredProducts(sorted);
+    setPage(1);
+  };
+
+  const paginatedProducts = filteredProducts.slice(
+    (page - 1) * limit,
+    page * limit
+  );
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* Search */}
       <View style={styles.searchBar}>
         <TextInput
           style={styles.input}
           placeholder="Search here..."
-          onChangeText={(text) => {
-            searchRef.current = text;
-          }}
-          // value={searchRef.currenppt}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
         <Button
           title="Search"
-          onPress={searchdata}
+          onPress={handleSearch}
           style={styles.searchButton}
         />
       </View>
+
+      {/* Sort Buttons */}
+      <View style={styles.sortOptions}>
+        <Button
+          title="Price ↑"
+          onPress={() => {
+            handleSort("price", "asc");
+            setActiveBtn(1);
+          }}
+          style={[styles.button, activeBtn === 1 && { backgroundColor: "red" }]}
+        />
+        <Button
+          title="Price ↓"
+          onPress={() => {
+            handleSort("price", "desc");
+            setActiveBtn(2);
+          }}
+          style={[styles.button, activeBtn === 2 && { backgroundColor: "red" }]}
+        />
+        <Button
+          title="Rating ↑"
+          onPress={() => {
+            handleSort("rating", "asc");
+            setActiveBtn(3);
+          }}
+          style={[styles.button, activeBtn === 3 && { backgroundColor: "red" }]}
+        />
+        <Button
+          title="Rating ↓"
+          onPress={() => {
+            handleSort("rating", "desc");
+            setActiveBtn(4);
+          }}
+          style={[styles.button, activeBtn === 4 && { backgroundColor: "red" }]}
+        />
+      </View>
+
+      {/* Product List */}
       <FlatList
-        data={[null]}
-        style={styles.sortOptions}
-        horizontal
-        renderItem={() => (
-          <>
-            <Button
-              title="Price Asc"
-              onPress={() => {
-                selectedSort("asc"), setactivebtn(1);
-              }}
-              style={[
-                styles.button,
-                activebtn === 1 && { backgroundColor: "red" },
-              ]}
-            />
-            <Button
-              title="Price Desc"
-              onPress={() => {
-                selectedSort("desc"), setactivebtn(2);
-              }}
-              style={[
-                styles.button,
-                activebtn === 2 && { backgroundColor: "red" },
-              ]}
-            />
-            <Button
-              title="Rating Asc"
-              onPress={() => {
-                sortByRating("rasc"), setactivebtn(3);
-              }}
-              style={[
-                styles.button,
-                activebtn === 3 && { backgroundColor: "red" },
-              ]}
-            />
-            <Button
-              title="Rating Desc"
-              onPress={() => {
-                sortByRating("rdesc"), setactivebtn(4);
-              }}
-              style={[
-                styles.button,
-                activebtn === 4 && { backgroundColor: "red" },
-              ]}
-            />
-          </>
-        )}
-      />
-      {/* <ScrollView horizontal style={styles.sortOptions}>
-        <Button
-          title="Price Asc"
-          onPress={() => selectedSort("asc")}
-          style={styles.button}
-        />
-        <Button
-          title="Price Desc"
-          onPress={() => selectedSort("desc")}
-          style={styles.button}
-        />
-        <Button
-          title="Rating Asc"
-          onPress={() => sortByRating("asc")}
-          style={styles.button}
-        />
-        <Button
-          title="Rating Desc"
-          onPress={() => sortByRating("desc")}
-          style={styles.button}
-        />
-      </ScrollView> */}
-      <FlatList
-        data={data}
-        renderItem={({ item }: any) => <Item item={item} />}
-        keyExtractor={(item) => JSON.stringify(Math.random())}
+        data={paginatedProducts}
+        renderItem={({ item }) => <Item item={item} />}
+        keyExtractor={(item) => item?.id?.toString()}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onEndReached={handleloadmore}
-        onEndReachedThreshold={0.1}
         ListFooterComponent={() => (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            {number < 15 && (
-              <Text style={{ fontWeight: 500, fontSize: 25 }}>
-                <ActivityIndicator
-                  size={75}
-                  style={{ height: 75, width: 75 }}
-                />
-                <IconSymbol
-                  name="play.circle"
-                  color={"black"}
-                  size={4}
-                  style={{ height: 20, width: 20 }}
-                />{" "}
-              </Text>
-            )}
+          <View style={styles.paginationContainer}>
+            <Button
+              title="Previous"
+              onPress={() => {
+                if (page > 1) setPage(page - 1);
+              }}
+              disabled={page === 1}
+              style={[
+                styles.paginationButton,
+                page === 1 && { backgroundColor: "#ccc" },
+              ]}
+            />
+            <Text style={styles.pageNumber}>
+              Page {page} of {totalPages}
+            </Text>
+            <Button
+              title="Next"
+              onPress={() => {
+                if (page < totalPages) setPage(page + 1);
+              }}
+              disabled={page >= totalPages}
+              style={[
+                styles.paginationButton,
+                page >= totalPages && { backgroundColor: "#ccc" },
+              ]}
+            />
           </View>
         )}
       />
@@ -198,7 +168,35 @@ const Flat = () => {
   );
 };
 
+const Item = React.memo(({ item }: any) => (
+  <View key={item.id} style={styles.card}>
+    <Image source={item.image} style={styles.image} contentFit="cover" />
+    <View style={styles.cardContent}>
+      <Text style={styles.itemName}>{item.title}</Text>
+      <Text style={styles.itemPrice}>${item.price}</Text>
+      <Text style={styles.itemDescription}>{item.description}</Text>
+    </View>
+  </View>
+));
+
 const styles = StyleSheet.create({
+  paginationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+  },
+  paginationButton: {
+    backgroundColor: "#007bff",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 6,
+  },
+  pageNumber: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
     paddingHorizontal: 15,
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     padding: 8,
-    borderColor: "#ddd",
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     backgroundColor: "#fff",
@@ -220,26 +218,22 @@ const styles = StyleSheet.create({
   searchButton: {
     marginLeft: 10,
     backgroundColor: "#007bff",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  sortOptions: {
-    flexWrap: "wrap",
-    flexGrow: 0,
-    flexDirection: "row",
-    marginBottom: 20,
-    height: "10%",
-  },
-  button: {
-    marginHorizontal: 10,
-    backgroundColor: "#28a745",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
   },
-  scrollArea: {
-    flex: 1,
+  sortOptions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+    flexWrap: "wrap",
+  },
+  button: {
+    marginVertical: 5,
+    backgroundColor: "#28a745",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
   card: {
     flexDirection: "row",
@@ -247,11 +241,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 8,
     overflow: "hidden",
+    elevation: 3,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
   },
   image: {
     width: 120,
@@ -261,7 +255,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     justifyContent: "center",
-    alignItems: "center",
   },
   itemName: {
     fontSize: 16,
@@ -270,6 +263,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     color: "#6c757d",
+    marginVertical: 4,
   },
   itemDescription: {
     fontSize: 12,
@@ -278,50 +272,3 @@ const styles = StyleSheet.create({
 });
 
 export default Flat;
-
-const Item = React.memo(({ item }: any) => (
-  <View key={item.id} style={styles.card}>
-    <Image source={item.image} style={styles.image} contentFit="cover" />
-    <View style={styles.cardContent}>
-      <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemPrice}>
-        ${item.price} | Rating: {item.rating}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="star"
-            size={15}
-            color={item.rating > 1 ? "#FFD700" : "grey"}
-          />
-          <Ionicons
-            name="star"
-            size={15}
-            color={item.rating > 2 ? "#FFD700" : "grey"}
-          />
-          <Ionicons
-            name="star"
-            size={15}
-            color={item.rating > 3 ? "#FFD700" : "grey"}
-          />
-          <Ionicons
-            name="star"
-            size={15}
-            color={item.rating > 4 ? "#FFD700" : "grey"}
-          />
-          <Ionicons
-            name="star"
-            size={15}
-            color={item.rating > 5 ? "#FFD700" : "grey"}
-          />
-        </View>
-      </Text>
-      <Text style={styles.itemDescription}>{item.description}</Text>
-    </View>
-  </View>
-));

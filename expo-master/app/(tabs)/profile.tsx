@@ -39,7 +39,7 @@ const Profile = () => {
         await SecureStore.deleteItemAsync("accessToken");
         await SecureStore.deleteItemAsync("refreshToken");
 
-        router.navigate("/(auth)/signin");
+        router.replace("/(auth)/signin");
       }
     } catch (error) {
       console.log("error in logout", error);

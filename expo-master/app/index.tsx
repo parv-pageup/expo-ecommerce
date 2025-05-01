@@ -12,7 +12,7 @@ const Index = () => {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
       console.log("🔐 Here's your value 🔐 \n" + result);
-      router.navigate("/(tabs)/home");
+      router.replace("/(tabs)/home");
     } else {
       console.log("No values stored under that key.");
     }

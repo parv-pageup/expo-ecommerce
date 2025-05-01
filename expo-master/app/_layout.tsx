@@ -44,6 +44,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        console.log("trying to refresh access Token");
         const refreshToken1 = await SecureStore.getItemAsync("refreshToken");
 
         const response = await api.post("users/refresh-token", {
@@ -63,7 +64,7 @@ api.interceptors.response.use(
         console.error("Token refresh failed:", refreshError);
         await SecureStore.deleteItemAsync("accessToken");
         await SecureStore.deleteItemAsync("refreshToken");
-        router.navigate("/(auth)/signin");
+        router.replace("/(auth)/signin");
         return Promise.reject(refreshError);
       }
     }

@@ -1,18 +1,13 @@
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image } from "expo-image";
-import { Link, useRouter } from "expo-router";
+import { Link, router } from "expo-router";
 import Button from "@/components/Button";
 import CustomeInput from "@/components/CustomeInput";
 import KeyboardAvoiding from "@/components/KeyboardAvoiding";
@@ -22,7 +17,6 @@ import * as SecureStore from "expo-secure-store";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
   async function save(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
@@ -39,7 +33,7 @@ const SignIn = () => {
         await save("accessToken", res.data.accessToken);
         await save("refreshToken", res.data.refreshToken);
 
-        router.navigate("/(tabs)/home");
+        router.replace("/(tabs)/home");
       }
     } catch (error: any) {
       console.log("error in login", error.message);

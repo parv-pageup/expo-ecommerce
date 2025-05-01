@@ -15,7 +15,7 @@ const TabLayout = () => {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="flat"
         options={{
           title: "Home",
           animation: "shift",
@@ -47,15 +47,23 @@ const TabLayout = () => {
       <Tabs.Screen
         name="scroll"
         options={{
-          title: "ScrollList",
+          title: "Scrolllist",
           animation: "shift",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="user-circle" color={color} />
+          ),
+          href: null,
         }}
       />
       <Tabs.Screen
-        name="Flat"
+        name="home"
         options={{
-          title: "FlatList",
+          title: "Scrolllist",
           animation: "shift",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="user-circle" color={color} />
+          ),
+          href: null,
         }}
       />
     </Tabs>
