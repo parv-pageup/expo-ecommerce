@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { api } from "@/app/_layout";
+// import { api } from "@/app/_layout";
 import { Image } from "expo-image";
+import { api } from "@/services/reqResInterceptors";
 
 const ProductDetails = () => {
   const { id } = useLocalSearchParams();
@@ -22,7 +23,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (id === undefined) {
-      router.navigate("/(tabs)/home");
+      router.navigate("/(tabs)/flat");
     }
     fetchProduct();
   }, [id]);

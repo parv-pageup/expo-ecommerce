@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     marginTop: 10,
     backgroundColor: "#f8f9fa",
   },
@@ -248,25 +248,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
   },
+
   input: {
     flex: 1,
     padding: 8,
     borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 20,
     backgroundColor: "#fff",
+    paddingLeft: 10,
   },
-  searchButton: {
-    marginLeft: 10,
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
+
   sortOptions: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginBottom: 15,
+    marginBottom: 10,
     flexWrap: "wrap",
   },
   button: {
@@ -274,7 +270,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#28a745",
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 40,
   },
   card: {
     flexDirection: "row",

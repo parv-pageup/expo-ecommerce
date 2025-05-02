@@ -12,6 +12,10 @@ const TabLayout = () => {
           borderTopWidth: 1,
           borderTopColor: "#232533",
           height: 54,
+          marginBottom: 10,
+          marginLeft: 10,
+          borderRadius: 40,
+          width: "95%",
         },
       }}
     >
@@ -56,18 +60,7 @@ const TabLayout = () => {
           href: null,
         }}
       />
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: "Home",
-          animation: "shift",
 
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user-circle" color={color} />
-          ),
-          href: null,
-        }}
-      />
       <Tabs.Screen
         name="productdetails/[id]"
         options={{

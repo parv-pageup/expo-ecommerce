@@ -22,7 +22,7 @@ const Index = () => {
   useEffect(() => {
     if (getValueFor("accessToken") !== undefined) {
       setTimeout(() => {
-        router.replace("/(tabs)/home");
+        router.replace("/(tabs)/flat");
       }, 100);
     }
   }, []);

@@ -34,7 +34,7 @@ const SignIn = () => {
         await save("accessToken", res.data.accessToken);
         await save("refreshToken", res.data.refreshToken);
 
-        router.replace("/(tabs)/home");
+        router.replace("/(tabs)/flat");
       }
     } catch (error: any) {
       console.log("error in login", error.message);
