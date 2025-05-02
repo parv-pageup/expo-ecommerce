@@ -12,8 +12,9 @@ import Button from "@/components/Button";
 import CustomeInput from "@/components/CustomeInput";
 import KeyboardAvoiding from "@/components/KeyboardAvoiding";
 import { useState } from "react";
-import { api } from "../_layout";
+// import { api } from "@/services/reqResInterceptors";
 import * as SecureStore from "expo-secure-store";
+import { api } from "@/services/reqResInterceptors";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

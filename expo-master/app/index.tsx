@@ -5,21 +5,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "@/components/Button";
 import * as SecureStore from "expo-secure-store";
+import { getValueFor } from "@/utils/securestore";
 const Index = () => {
   const router = useRouter();
 
-  async function getValueFor(key: string) {
-    let result = await SecureStore.getItemAsync(key);
-    if (result) {
-      console.log("🔐 Here's your value 🔐 \n" + result);
-      router.replace("/(tabs)/home");
-    } else {
-      console.log("No values stored under that key.");
-    }
-  }
+  // async function getValueFor(key: string) {
+  //   let result = await SecureStore.getItemAsync(key);
+  //   if (result) {
+  //     console.log("🔐 Here's your value 🔐 \n" + result);
+  //     router.replace("/(tabs)/home");
+  //   } else {
+  //     console.log("No values stored under that key.");
+  //   }
+  // }
 
   useEffect(() => {
-    getValueFor("accessToken");
+    if (getValueFor("accessToken") !== undefined) {
+      setTimeout(() => {
+        router.replace("/(tabs)/home");
+      }, 100);
+    }
   }, []);
 
   return (

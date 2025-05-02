@@ -6,17 +6,18 @@ import { Image } from "expo-image";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
+import { getValueFor } from "@/utils/securestore";
 const Home = () => {
   const [data, setdata] = useState([]);
 
-  async function getValueFor(key: string) {
-    let result = await SecureStore.getItemAsync(key);
-    if (result) {
-      console.log("🔐 Here's your value 🔐 \n" + result);
-    } else {
-      console.log("No values stored under that key.");
-    }
-  }
+  // async function getValueFor(key: string) {
+  //   let result = await SecureStore.getItemAsync(key);
+  //   if (result) {
+  //     console.log("🔐 Here's your value 🔐 \n" + result);
+  //   } else {
+  //     console.log("No values stored under that key.");
+  //   }
+  // }
 
   const fetchallproducts = async () => {
     try {

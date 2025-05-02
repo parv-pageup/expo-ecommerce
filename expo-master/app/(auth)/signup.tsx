@@ -17,7 +17,7 @@ import Button from "@/components/Button";
 import CustomeInput from "@/components/CustomeInput";
 import KeyboardAvoiding from "@/components/KeyboardAvoiding";
 import { useState } from "react";
-import { api } from "../_layout";
+import { api } from "@/services/reqResInterceptors";
 
 const SignUp = () => {
   const router = useRouter();

@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { api } from "../_layout";
+import { api } from "@/services/reqResInterceptors";
 import Button from "@/components/Button";
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";

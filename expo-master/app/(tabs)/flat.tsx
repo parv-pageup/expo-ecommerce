@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import Button from "@/components/Button";
-import { api } from "../_layout";
+import { api } from "@/services/reqResInterceptors";
 import { useDebounce } from "use-debounce";
 import { Link } from "expo-router";
 
