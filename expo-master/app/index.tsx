@@ -4,7 +4,6 @@ import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "@/components/Button";
-import * as SecureStore from "expo-secure-store";
 import { getValueFor } from "@/utils/securestore";
 const Index = () => {
   const router = useRouter();
@@ -23,7 +22,7 @@ const Index = () => {
     if (getValueFor("accessToken") !== undefined) {
       setTimeout(() => {
         router.replace("/(tabs)/flat");
-      }, 100);
+      }, 1000);
     }
   }, []);
 

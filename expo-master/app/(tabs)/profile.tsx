@@ -5,10 +5,11 @@ import Button from "@/components/Button";
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { logout } from "@/services/apicalling";
 
 const Profile = () => {
   const router = useRouter();
-  const [user, setuser] = useState({});
+  const [user, setuser] = useState<any>({});
   useEffect(() => {
     fetchuserdetails();
   }, []);
@@ -31,7 +32,7 @@ const Profile = () => {
 
   const handlelogout = async () => {
     try {
-      const res = await api.post("/users/logout");
+      const res = await logout();
       if (!res) {
         throw new Error("error is coming in logout and res is causing problem");
       } else {

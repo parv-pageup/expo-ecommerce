@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 // import { api } from "@/app/_layout";
 import { Image } from "expo-image";
 import { api } from "@/services/reqResInterceptors";
+import { fetchsingleproductapi } from "@/services/apicalling";
 
 const ProductDetails = () => {
   const { id } = useLocalSearchParams();
@@ -11,7 +12,7 @@ const ProductDetails = () => {
 
   const fetchProduct = async () => {
     try {
-      const res = await api.get(`/products/${id}`);
+      const res = await fetchsingleproductapi({ id });
       if (res) {
         setData(res.data);
         console.log("data=", res.data);

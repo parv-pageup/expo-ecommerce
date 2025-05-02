@@ -12,27 +12,28 @@ import Button from "@/components/Button";
 import CustomeInput from "@/components/CustomeInput";
 import KeyboardAvoiding from "@/components/KeyboardAvoiding";
 import { useState } from "react";
-// import { api } from "@/services/reqResInterceptors";
-import * as SecureStore from "expo-secure-store";
-import { api } from "@/services/reqResInterceptors";
+
+import { signinapi } from "@/services/apicalling";
+import { save } from "@/utils/securestore";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function save(key: string, value: string) {
-    await SecureStore.setItemAsync(key, value);
-  }
-
   const handlesignin = async () => {
     try {
       console.log("email", email);
-      const res = await api.post("/users/login", { email, password });
+      // const res = await api.post("/users/login", { email, password });
+      const res: any = await signinapi({ email, password });
       if (!res) {
         console.log("error is coming in login and res is causing problem");
       } else {
         console.log("logginin user", res.data);
         await save("accessToken", res.data.accessToken);
         await save("refreshToken", res.data.refreshToken);
+        await save(
+          "user",
+          JSON.stringify({ email: res.data.email, username: res.data.username })
+        );
 
         router.replace("/(tabs)/flat");
       }
@@ -85,7 +86,7 @@ const SignIn = () => {
                 <Text>
                   Don't Have an Account{" "}
                   <Link href={"/(auth)/signup"} style={{ color: "blue" }}>
-                    SignUp
+                    <Text> SignUp</Text>
                   </Link>
                 </Text>
               </View>

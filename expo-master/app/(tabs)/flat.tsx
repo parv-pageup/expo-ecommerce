@@ -13,6 +13,7 @@ import Button from "@/components/Button";
 import { api } from "@/services/reqResInterceptors";
 import { useDebounce } from "use-debounce";
 import { Link } from "expo-router";
+import { fetchproductsapi } from "@/services/apicalling";
 
 const category = [
   "Electronics",
@@ -37,7 +38,7 @@ const Flat = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.get(`/products/products`);
+      const res = await fetchproductsapi();
       const data = res.data;
       setAllProducts(data);
       setFilteredProducts(data);
@@ -160,6 +161,7 @@ const Flat = () => {
 
       {/* Product List */}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={paginatedProducts}
         renderItem={({ item }) => <Item item={item} />}
         keyExtractor={(item) => item?.id?.toString()}

@@ -18,6 +18,7 @@ import CustomeInput from "@/components/CustomeInput";
 import KeyboardAvoiding from "@/components/KeyboardAvoiding";
 import { useState } from "react";
 import { api } from "@/services/reqResInterceptors";
+import { signupapi } from "@/services/apicalling";
 
 const SignUp = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const SignUp = () => {
     try {
       console.log("in frontend sending request on backend");
 
-      const res = await api.post("/users/register", {
+      const res = await signupapi({
         username,
         email,
         password,
@@ -102,7 +103,7 @@ const SignUp = () => {
                   <Text>
                     Already Have an Account{" "}
                     <Link href={"/(auth)/signin"} style={{ color: "blue" }}>
-                      SignIn
+                      <Text> SignIn</Text>
                     </Link>
                   </Text>
                 </View>
