@@ -5,6 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 const TabLayout = () => {
   return (
     <Tabs
+      initialRouteName="flat"
       screenOptions={{
         tabBarStyle: {
           backgroundColor: "#161622",
@@ -58,8 +59,9 @@ const TabLayout = () => {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Scrolllist",
+          title: "Home",
           animation: "shift",
+
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="user-circle" color={color} />
           ),

@@ -5,6 +5,7 @@ import {
   TextInput,
   FlatList,
   RefreshControl,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
@@ -106,30 +107,8 @@ const Flat = () => {
 
       {/* Sort Buttons */}
       <View style={styles.sortOptions}>
-        <Button
-          title="Price ↑"
-          onPress={() => {
-            handleSort("price", "asc");
-            setActiveBtn(10);
-          }}
-          style={[
-            styles.button,
-            activeBtn === 10 && { backgroundColor: "red" },
-          ]}
-        />
-        <Button
-          title="Price ↓"
-          onPress={() => {
-            handleSort("price", "desc");
-            setActiveBtn(11);
-          }}
-          style={[
-            styles.button,
-            activeBtn === 11 && { backgroundColor: "red" },
-          ]}
-        />
-
         <FlatList
+          showsHorizontalScrollIndicator={false}
           horizontal
           data={category}
           renderItem={({ item, index }) => (
@@ -145,6 +124,35 @@ const Flat = () => {
                 { marginHorizontal: 10 },
               ]}
             />
+          )}
+          ListFooterComponent={() => (
+            <ScrollView style={{ flex: 1 }} horizontal>
+              <Button
+                title="Price ↑"
+                onPress={() => {
+                  handleSort("price", "asc");
+                  setActiveBtn(10);
+                }}
+                style={[
+                  styles.button,
+                  activeBtn === 10 && {
+                    backgroundColor: "red",
+                  },
+                  { marginHorizontal: 10 },
+                ]}
+              />
+              <Button
+                title="Price ↓"
+                onPress={() => {
+                  handleSort("price", "desc");
+                  setActiveBtn(11);
+                }}
+                style={[
+                  styles.button,
+                  activeBtn === 11 && { backgroundColor: "red" },
+                ]}
+              />
+            </ScrollView>
           )}
           style={{ gap: 5, marginHorizontal: 20 }}
         />
@@ -257,7 +265,7 @@ const styles = StyleSheet.create({
   },
   sortOptions: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     marginBottom: 15,
     flexWrap: "wrap",
   },
