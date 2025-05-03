@@ -17,6 +17,7 @@ const TabLayout = () => {
           borderRadius: 40,
           width: "95%",
         },
+        tabBarActiveTintColor: "#1b5eee",
       }}
     >
       <Tabs.Screen

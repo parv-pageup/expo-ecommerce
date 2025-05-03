@@ -2,7 +2,9 @@ import { save } from "@/utils/securestore";
 import axios from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-export const api = axios.create({ baseURL: "http://192.168.1.9:8000/api/v1" });
+export const api = axios.create({
+  baseURL: "http://192.168.1.26:8000/api/v1",
+});
 // Request Interceptor: Attach token automatically
 api.interceptors.request.use(async (config) => {
   const token = await SecureStore.getItemAsync("accessToken");

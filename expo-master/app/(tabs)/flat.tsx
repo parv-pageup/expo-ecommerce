@@ -6,11 +6,11 @@ import {
   FlatList,
   RefreshControl,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import Button from "@/components/Button";
-import { api } from "@/services/reqResInterceptors";
 import { useDebounce } from "use-debounce";
 import { Link } from "expo-router";
 import { fetchproductsapi } from "@/services/apicalling";
@@ -25,78 +25,74 @@ const category = [
   "Books",
   "food",
 ];
+
 const Flat = () => {
+  const [loading, setloading] = useState(false);
   const [allProducts, setAllProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [sortOrder, setsortOrder] = useState("");
+  const [sortBy, setsortBy] = useState("");
+  const [cat, setcat] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [activeBtn, setActiveBtn] = useState(0);
   const [value] = useDebounce(searchQuery, 1000);
-  const totalPages = Math.ceil(filteredProducts.length / limit);
-
+  const [searchprdts, setsearchprdts] = useState<any[]>([]);
+  const [totalpages, settotalpages] = useState(0);
+  const [modal, setmodal] = useState({});
   const fetchProducts = async () => {
+    setloading(true);
     try {
-      const res = await fetchproductsapi();
+      const res = await fetchproductsapi({
+        page,
+        category: cat,
+        sortOrder,
+        sortBy,
+        searchQuery,
+      });
       const data = res.data;
-      setAllProducts(data);
-      setFilteredProducts(data);
-      setPage(1);
+      // console.log("data=", res);
+      settotalpages(res?.pages);
+      if (page === 1) {
+        setAllProducts(data);
+        setsearchprdts(data);
+      } else {
+        setAllProducts((prev) => [...prev, ...data]);
+        setsearchprdts((prev) => [...prev, ...data]);
+      }
     } catch (error: any) {
       console.log("Fetch error:", error.message);
     }
+    setloading(false);
   };
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [cat, sortOrder, page, sortBy, activeBtn, value]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     setActiveBtn(0);
-    setFilteredProducts(allProducts);
+    setcat("");
+    setsortBy("");
+    setsortOrder("");
+    setSearchQuery("");
+    setmodal({});
+    setPage(1);
     await fetchProducts();
     setRefreshing(false);
   };
 
   const handleSort = (key: string, order: string) => {
-    let updatedProducts = [...allProducts];
-
-    if (key === "category") {
-      updatedProducts = updatedProducts.filter(
-        (item) => item.category === order
-      );
-    } else {
-      updatedProducts.sort((a, b) =>
-        order === "asc" ? a[key] - b[key] : b[key] - a[key]
-      );
-    }
-
-    setFilteredProducts(updatedProducts);
+    setsortBy(key);
+    setsortOrder(order);
     setPage(1);
+    setAllProducts([]);
+    setsearchprdts([]);
   };
-
-  const paginatedProducts = filteredProducts.slice(
-    (page - 1) * limit,
-    page * limit
-  );
-  //20 - 30
-  useEffect(() => {
-    if (value) {
-      const filtered = allProducts.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-      setPage(1);
-    } else {
-      setFilteredProducts(allProducts);
-    }
-  }, [value]);
 
   return (
     <View style={styles.container}>
-      {/* Search */}
       <View style={styles.searchBar}>
         <TextInput
           style={styles.input}
@@ -106,7 +102,6 @@ const Flat = () => {
         />
       </View>
 
-      {/* Sort Buttons */}
       <View style={styles.sortOptions}>
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -116,12 +111,15 @@ const Flat = () => {
             <Button
               title={item}
               onPress={() => {
-                handleSort("category", item);
+                setcat(item);
                 setActiveBtn(index + 1);
+                setPage(1);
+                setAllProducts([]);
+                setsearchprdts([]);
               }}
               style={[
                 styles.button,
-                activeBtn === index + 1 && { backgroundColor: "red" },
+                activeBtn === index + 1 && { backgroundColor: "#03205e" },
                 { marginHorizontal: 10 },
               ]}
             />
@@ -136,9 +134,7 @@ const Flat = () => {
                 }}
                 style={[
                   styles.button,
-                  activeBtn === 10 && {
-                    backgroundColor: "red",
-                  },
+                  activeBtn === 10 && { backgroundColor: "#03205e" },
                   { marginHorizontal: 10 },
                 ]}
               />
@@ -150,7 +146,7 @@ const Flat = () => {
                 }}
                 style={[
                   styles.button,
-                  activeBtn === 11 && { backgroundColor: "red" },
+                  activeBtn === 11 && { backgroundColor: "#03205e" },
                 ]}
               />
             </ScrollView>
@@ -158,51 +154,102 @@ const Flat = () => {
           style={{ gap: 5, marginHorizontal: 20 }}
         />
       </View>
-
-      {/* Product List */}
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={paginatedProducts}
-        renderItem={({ item }) => <Item item={item} />}
-        keyExtractor={(item) => item?.id?.toString()}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListFooterComponent={() => (
-          <View style={styles.paginationContainer}>
-            <Button
-              title="Previous"
-              onPress={() => {
-                if (page > 1) setPage(page - 1);
-              }}
-              disabled={page === 1}
-              style={[
-                styles.paginationButton,
-                page === 1 && { backgroundColor: "#ccc" },
-              ]}
-            />
-            <Text style={styles.pageNumber}>
-              Page {page} of {totalPages}
-            </Text>
-            <Button
-              title="Next"
-              onPress={() => {
-                if (page < totalPages) setPage(page + 1);
-              }}
-              disabled={page >= totalPages}
-              style={[
-                styles.paginationButton,
-                page >= totalPages && { backgroundColor: "#ccc" },
-              ]}
-            />
-          </View>
-        )}
-      />
+      {JSON.stringify(modal) !== "{}" && (
+        <View
+          style={{
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 250,
+            width: "80%",
+            left: "10%",
+            top: 200,
+            zIndex: 11,
+            backgroundColor: "#E8F1E5",
+            borderRadius: 20,
+            padding: 20,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 5,
+            elevation: 5,
+          }}
+        >
+          <Image
+            source={modal?.image}
+            style={{
+              height: 80,
+              width: 80,
+              marginBottom: 10,
+              borderRadius: 10,
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              color: "#00000",
+              marginBottom: 5,
+            }}
+          >
+            {modal?.title}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#00000", marginBottom: 10 }}>
+            ${modal?.price}
+          </Text>
+          <Button
+            title="❌"
+            onPress={() => setmodal({})}
+            style={{
+              paddingVertical: 8,
+              paddingHorizontal: 15,
+              borderRadius: 15,
+            }}
+          />
+        </View>
+      )}
+      {loading && page === 1 ? (
+        <View style={styles.sortOptions}>
+          <ActivityIndicator size={75} />
+        </View>
+      ) : searchprdts.length > 0 ? (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={JSON.stringify(modal) === "{}"}
+          data={searchprdts}
+          renderItem={({ item }) => <Item item={item} setmodal={setmodal} />}
+          keyExtractor={(item) => item?.id?.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          onEndReached={() => {
+            if (!loading && page <= totalpages) setPage((prev) => prev + 1);
+          }}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={
+            loading && page > 1 ? <ActivityIndicator /> : null
+          }
+          style={[
+            { position: "relative" },
+            JSON.stringify(modal) !== "{}" ? { opacity: 0.3 } : {},
+          ]}
+        />
+      ) : (
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Text style={{ fontSize: 50, justifyContent: "center" }}>
+            No Products Founded
+          </Text>
+        </ScrollView>
+      )}
     </View>
   );
 };
 
-const Item = React.memo(({ item }: any) => (
+const Item = React.memo(({ item, setmodal }: any) => (
   <Link
     href={{
       pathname: "/productdetails/[id]",
@@ -216,6 +263,14 @@ const Item = React.memo(({ item }: any) => (
         <Text style={styles.itemName}>{item.title}</Text>
         <Text style={styles.itemPrice}>${item.price}</Text>
         <Text style={styles.itemDescription}>{item.description}</Text>
+        <Button
+          title="View Modal"
+          style={[
+            styles.button,
+            { justifyContent: "center", alignItems: "center" },
+          ]}
+          onPress={() => setmodal(item)}
+        />
       </View>
     </View>
   </Link>
@@ -239,6 +294,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
   container: {
     flex: 1,
     paddingHorizontal: 10,
@@ -250,7 +306,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
   },
-
   input: {
     flex: 1,
     padding: 8,
@@ -260,7 +315,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingLeft: 10,
   },
-
   sortOptions: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -269,10 +323,11 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 5,
-    backgroundColor: "#28a745",
-    paddingVertical: 10,
+    backgroundColor: "#1b5eee",
+    paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 40,
+    borderWidth: 1,
   },
   card: {
     flexDirection: "row",
@@ -288,7 +343,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 120,
-    height: 120,
+    height: 140,
   },
   cardContent: {
     flex: 1,

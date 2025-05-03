@@ -24,9 +24,23 @@ export const signupapi = async ({
     password,
   });
 };
-export const fetchproductsapi = async () => {
-  return await api.get(`/products/products`);
+export const fetchproductsapi = async ({
+  page,
+  category,
+  sortOrder,
+  sortBy,
+  searchQuery,
+}: any) => {
+  const params = new URLSearchParams();
+  if (page) params.append("page", page);
+  if (category) params.append("category", category);
+  if (sortBy) params.append("sortBy", sortBy);
+  if (sortOrder) params.append("sortOrder", sortOrder);
+  if (searchQuery) params.append("search", searchQuery);
+
+  return await api.get(`/products/products?${params.toString()}`);
 };
+
 export const fetchsingleproductapi = async ({
   id,
 }: {
